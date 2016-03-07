@@ -1,0 +1,32 @@
++PasteInlineData(['usr',user])
+.row
+  .col-md-12
+    #login.pull-md-right
+      ul.nav.navbar-nav
+        if (user && user.username)
+          li.nav-item
+            strong.nav-link
+              | Привет,
+              a(href='/settings') #{user.username}&nbsp;
+              a.fa.fa-sign-out(href='/logout')
+        else
+          li.nav-item
+            a.nav-link(href='/register')
+              | Регистрация
+          li.nav-item
+            a.nav-link(href='/login')
+              | Авторизация
+nav.navbar.navbar-light.bg-faded
+  ul.nav.navbar-nav#nav
+    li.nav-item
+      a.nav-link(href='/') Главная
+    li.nav-item
+      a.nav-link(href='/post') Блог
+      if (user)
+        if (user.admin || (user.id===2))
+          li.nav-item
+            a.nav-link(href='/admin') Админка
+  #search.nav.navbar-nav.pull-md-right
+    .form-inline.pull-xs-right
+      input.form-control(type='text', placeholder='Поиск...')
+      button#srch_btn.btn.btn-success-outline(type='submit') Поиск

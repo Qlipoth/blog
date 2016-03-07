@@ -1,0 +1,42 @@
+extends ../global.jade
+
+block title
+  title Post
+
+block content
+  +PasteInlineData(['posts',posts])
+  +PasteInlineData(['all_records',posts.count])
+  script(src='/js/post.js')
+  script(src='/js/pagination.js')
+  h2.text-center
+  .row
+    .col-md-10
+      if (posts.posts.length)
+        each post in posts.posts
+          +renderPost(post)
+      else
+        p Посты отсутствуют
+  .row
+    .col-md-12
+      .pagination
+          //- li.page-item
+          //-   a.page-link(href='/post') 1
+          //- li.page-item
+          //-   a.page-link(href='/post/page?page=2') 2
+          //- li.page-item
+          //-   a.page-link(href='/post/page?page=3') 3
+    //- .text-center
+    //-   h2 CREATE NEW
+    //-   br
+    //- .row
+    //-   #myForm
+    //-     .col-md-6
+    //-       input.form-control.title(type='text', name='title', placeholder='Title Post')
+    //-       hr
+    //-       textarea.form-control.description(rows='3', name='description', placeholder='Description')
+    //-     .col-md-6
+    //-       textarea.form-control.content(rows='7', name='content', placeholder='Content')
+    //-     .col-md-12
+    //-       button.btn.btn-success
+    //-         | create
+//- mixin PasteInlineData(['posts',posts])

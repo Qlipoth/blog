@@ -1,0 +1,15 @@
+extends ../global.jade
+
+block title
+  title Поиск
+
+block content
+  +PasteInlineData(['posts',posts])
+  h2.text-center Поиск
+  .row
+    .col-md-10
+      if (posts.length)
+        each post in posts
+          +renderPost(post)
+      else
+        p Ничего не найдено

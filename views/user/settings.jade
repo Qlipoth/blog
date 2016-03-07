@@ -1,0 +1,45 @@
+extends ../global.jade
+
+block title
+  title настройки профиля
+block content
+  script(src='js/pageControllers/settings/settings.js')
+  script(src='js/pageControllers/settings/Cropper.js')
+  .container
+    h1 Настройки профиля
+    br
+    .row
+      form(method='POST').clearfix
+        .col-md-3#avatar
+          img.thumbnail(src=user.image? 'uploads/tmp/profile/'+user.id+'/' + user.image : '/images/avatar.png')
+        .col-md-8
+          .row
+            .form-group.col-md-4
+              label.h5 Новый пароль
+              input#password.form-control(type="password" placeholder="Введите новый пароль" required)
+            .form-group.col-md-4
+              label.h5 Подтверждение
+              input#conf_password.form-control(type="password" placeholder="Подтвердите новый пароль" required)
+        .col-md-8
+          .form-group
+            label.h5 Сменить email
+            input#email.form-control(type="text" placeholder="Введите новый e-mail" required value="#{user.email}")
+
+        .col-md-12
+          br
+          .form-group
+            input(type='submit' value='Сохранить' data-id='#{user.id}').btn.btn-info#save_profile
+      form.hidden#user_upload_form(
+              action='/api/upload/'
+              target='form_target'
+              method='post'
+              enctype='multipart/form-data'
+              )
+              input#path(
+                name='path'
+                type='text'
+                )
+              input#file(
+                name='file'
+                type='file'
+            )

@@ -1,0 +1,28 @@
+extends ../global.jade
+
+block title
+  title admin edit
+block content
+  script(src='/js/pageControllers/admin/admin_edit.js')
+  +PasteInlineData(['post',post])
+  .container
+    .row
+      .col-md-2
+      .col-md-8.well.text-center
+        .form-group
+          h4 Title
+          input#title.form-control(type='text', value='#{post.title}')
+         .form-group
+            label.h4(for="tags")
+              | Теги:
+              -var arr = [];
+              - post.tags.forEach(function(el){
+              -    arr.push(el.name)
+              - })
+            input.form-control#tags(type="text", value = "#{arr}")
+          .form-group
+            h4 Content
+            #content.form-control
+          .form-group
+            button#update.btn.btn-success(data-id='#{post.id}' data-date='#{post.createdAt}') Обновить
+          

@@ -1,0 +1,97 @@
+// прижать футер к низу
+html,
+body,
+.wrapper {
+    height: 100%;
+}
+
+.content {
+    box-sizing: border-box;
+    min-height: 100%;
+    padding-bottom: 90px;
+}
+
+body {
+    .panel-body{
+      margin-bottom: 1rem;
+    }
+    .myfooter {
+        background-color: #3498DB;
+        height: 80px;
+        margin-top: -80px;
+    }
+    .my-panel {
+        margin-bottom: 1.3rem;
+        .panel-footer {
+            margin-top: 0.4rem;
+        }
+    }
+    .comment-buttons {
+        button {
+            margin-right: 0.4rem;
+            &:focus {
+                outline: none;
+            }
+            &:active {
+                outline: none !important;
+            }
+        }
+    }
+    .my-container {
+        box-sizing: border-box;
+        background-color: #fff;
+    }
+    background-color: #bbb;
+    .navbar {
+        margin-bottom: 1.3rem;
+    }
+    .comment {
+        padding: 1rem;
+        padding-bottom: 0;
+    }
+    .created > {
+        span {
+            display: inline-block;
+            padding-right: 1rem;
+        }
+    }
+    .retvit{
+        font-size: 0.85rem;
+    }
+
+}
+
+.pagination {
+    li {
+        @extend .page-item
+    }
+    a {
+        @extend .page-link
+    }
+}
+.bootstrap-tagsinput{
+  width: 100%;
+}
+
+.hidden{
+  display:none;
+}
+
+#avatar {
+  img{
+    width:100%;
+  }
+}
+.ui-autocomplete{
+
+    padding-left: 0;
+    li{
+        padding-left: 0;
+        p{
+            margin-bottom: 0;
+        }
+        &:first-child{
+            margin-top: 1rem;
+        }
+    }
+}

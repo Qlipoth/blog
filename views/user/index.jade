@@ -1,0 +1,20 @@
+extends ../global.jade
+
+block title
+  title admin
+block content
+  .container
+    .row
+      .col-md-4
+      .col-md-4
+        .panel.panel-default
+          .panel-body
+            h2
+              | Sign up
+            form(action='/user/create', method='post')
+              input(type='text', name='username', placeholder='Имя Пользователя')
+              br
+              input(type='password', name='password', placeholder='Пароль')
+              br
+              //- input(type='hidden', name='_csrf', value='#{_csrf}')
+              input.btn.btn-success.btn-block(type='submit', value='Зарегистрироваться')

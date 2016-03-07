@@ -1,0 +1,19 @@
+extends ./../global.jade
+
+block title
+  title Main
+
+block content
+  +PasteInlineData(['results',results])
+  h1 Главная страница
+  br
+  .col-md-12
+    h3 Тестирование
+    .form-group
+      input#my_search(type="text")
+      div #{results}
+      //- select.my-select.form-control
+      //-   option(data-img-src='/images/adnan.png') Adnan Sagar
+      //-   option(data-img-src='/images/rena.png') Rena Cugelman
+      //-   option(data-img-src='/images/tavis.png') Tavis Lochhead
+      //-   option(data-img-src='/images/brian.png', selected='selected') Brain Cugelman

@@ -1,0 +1,51 @@
+#logo.editor,#avatar.editor {height: 500px;}
+#logoNeighbor {
+    transition: all 0.3s;
+    }
+#logo, #avatar {
+    transition: all 0.3s;
+    overflow: hidden;
+    position: relative;
+    padding: 0px;
+    padding-left: 15px;
+    }
+    #logo img, #avatar img {
+        transition: opacity 0.3s;
+        opacity: 1;
+        border: none;
+        padding: 0px;
+        margin: 0px;
+        }
+#logo .editorIcon ,#avatar .editorIcon{
+    opacity: 0;
+    display: none;
+    }
+#avatar .cropperIcon:hover, #logo .cropperIcon:hover {
+    color: #fff;
+    background-color: #165ABB;
+    }
+#avatar .cropperIcon, #logo .cropperIcon {
+    transition: all 0.3s;
+    position: absolute;
+    bottom: 5px;
+    background-color: #587FC9;
+    border-radius: 3px;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    font-size: 20px;
+    width: 28px;
+    text-align: center;
+    }
+     #avatar .cropperIcon#changeLogo, #logo .cropperIcon#changeLogo {
+        right: 5px;
+        }
+    #avatar .cropperIcon#saveLogo, #logo .cropperIcon#saveLogo {
+        right: 38px;
+        }
+    #avatar .cropperIcon#cancelLogo:hover, #logo .cropperIcon#cancelLogo:hover {
+        color: rgba(255, 0, 0, 1);
+        }
+    #avatar .cropperIcon#cancelLogo, #logo .cropperIcon#cancelLogo {
+        color: rgba(255, 0, 0, 0.4);
+        right: 71px;
+        }

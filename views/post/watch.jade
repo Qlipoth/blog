@@ -1,0 +1,35 @@
+extends ../global.jade
+
+block title
+  title #{post.title}
+
+block content
+  +PasteInlineData(['post',post])
+  script(src="/js/pageControllers/watch/watch.js")
+  script(src="/js/pageControllers/watch/comment.js")
+  .panel.panel-default
+    .panel-body.text-center
+      h3 #{post.title}
+      hr
+      article.fr-view !{post.content}
+      .tag-list
+        each tag in post.tags
+          .btn.btn-success
+            | #{tag.name}
+          |&nbsp;
+    if (post.comments.length)
+      blockquote
+         +renderComment(post.comments)
+
+    hr
+    h4 Оставить коммментарий
+    if (user.username)
+      +renderWriteComment()
+    else
+      p
+        a.nav-link(href='/login')
+          | авторизуйтесь
+        | &nbsp;или&nbsp;
+        a.nav-link(href='/login')
+          | зарегестрируйтесь
+        |, чтобы оставить комментарий

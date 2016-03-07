@@ -1,0 +1,94 @@
+mixin PasteInlineData(args)
+  - name = args[0]
+  - data = args[1]
+  if (typeof name !== 'undefined' && typeof data !== 'undefined')
+    script.
+      window["#{name}"] = !{JSON.stringify(data).replace(/<\//g, "<\\/")};
+
+mixin renderPost(item)
+    .panel.panel-default.my-panel
+      .panel-body
+        h3.text-center
+          a(href='/post/watch/#{item.id}')
+            | #{item.title}
+        article.fr-view
+          !{item.description}
+        small.created
+          span
+            i.fa.fa-calendar
+            |&nbsp;
+            |#{sails.moment(item.createdAt).format('DD-MM-YYYY')}
+          span
+            i.fa.fa-user
+            |&nbsp;
+            |#{item.author.username}
+          span
+            i.fa.fa-comments
+            |&nbsp;
+            |#{item.comments.length}
+          span
+            i.fa.fa-tags
+            |&nbsp;
+            each tag ,index in item.tags
+              span
+                if (index==item.tags.length-1)
+                    |#{tag.name}
+                else
+                  |#{tag.name},
+      .panel-footer
+        a.btn.btn-info(href='/post/watch/#{item.id}')
+          | Learn more
+mixin renderWriteComment()
+  form
+    textarea.form-control(rows='3', name='content', placeholder="Введите текст")
+    input.com_author(type='hidden', name='com_author',value='#{user.id}')
+    input.post_id(type='hidden', name='post_id',value='#{post.id}')
+    br
+    button.btn.btn-info.send Отправить
+mixin renderCurrentPost()
+    .panel.panel-default
+      .panel-body
+        h3.text-center
+          | #{arguments[0]}
+        article.fr-view
+          | #{arguments[1]}
+      .panel-footer
+        a.btn.btn-info(href='/post/watch/#{arguments[2]}')
+          | Learn more
+mixin renderComment(comments,author)
+  each item in comments
+    .panel.panel-default.comment.clearfix(data-id="#{item.id}")
+      .panel-body.col-md-12.row
+        if (item.author && item.author.image)
+          .ava.col-md-1
+            img.img-fluid(src=item.author.image? '/uploads/tmp/profile/'+item.author.id+'/' + item.author.image : '/images/avatar.png')
+        .comment-box.col-md-11
+          h5
+            if (author)
+              span #{item.author.username}
+              |&nbsp;
+              small.retvit.fa.fa-share
+              |&nbsp;
+              span #{author}
+            else
+              span #{item.author.username} написал:
+
+          article #{item.content}
+          .panel-footer
+            small #{sails.moment(item.createdAt).format('DD-MM-YYYY')}
+            br
+            if (user.username)
+              .comment-buttons
+                button.btn.btn-default.label.label-info.answer_comment(
+                data-id="#{item.id}",
+                data-toggle="collapse",
+                data-target="#comment#{item.id}",
+                aria-expanded="false") ответить
+                if (user.admin)
+                  button.btn.btn-default.label.label-danger.remove_comment(data-id="#{item.id}") удалить
+                .collapse.answer-wrapper(id="comment#{item.id}")
+                  +renderWriteComment(item.comment)
+      if (item.childs)
+        +renderComment(item.childs,item.author.username)
+
+

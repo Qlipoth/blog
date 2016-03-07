@@ -1,0 +1,10 @@
+include mixins/mixins
+<!DOCTYPE html>
+html(lang="en")
+	include parts/head.jade
+	body
+		.wrapper
+			.container.my-container.content
+				include parts/navigation.jade
+				block content
+			footer.container.myfooter
