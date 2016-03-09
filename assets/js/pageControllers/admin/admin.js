@@ -55,7 +55,7 @@ $(function() {
         refreshAfterCallback: true,
         // Called when the button is hit.
         callback: function() {
-            this.html.insert('<hr>\n');
+            this.html.insert('<hr>');
         },
 
         // Called when the button state might have changed.
