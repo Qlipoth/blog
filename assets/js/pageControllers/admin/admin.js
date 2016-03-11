@@ -1,46 +1,114 @@
 $(function() {
-
+    $('.color').change(function() {
+        $(this).prev().text($(this).val())
+        $("h1").css('background', $(this).val());
+    });
     var preview;
-    var pieData = [{
-        value: 25,
-        label: 'Java',
-        color: '#811bd6'
-    }, {
-        value: 10,
-        label: 'Scala',
-        color: '#9cbaba'
-    }, {
-        value: 35,
-        label: 'HTML',
-        color: '#6ae128'
-    }];
+
     var froala_settings = {
         toolbarButtons: ['insert', 'preview', '|'],
         toolbarButtonsMD: ['insert', 'preview', '|'],
         toolbarButtonsSM: ['insert', 'preview', '|'],
         toolbarButtonsXS: ['insert', 'preview', '|']
     }
+    var pieData = [];
+
     var fr = new FileReader;
     var file;
-
-    function initCanvas() {
-
-        $('.chart').each(function(i, chart) {
-            new Chart(chart.getContext('2d')).Pie(pieData);
-        })
-    }
+    var wp_markup = ['<div class="popup-content row">',
+        '<div class="col-md-6 form-group">',
+        '<label>Введите название единицы</label>',
+        '<input class="form-control unit" type="text">',
+        '</div>',
+        '<div class="col-md-6 form-group">',
+        '<label>Значение в %</label>',
+        '<input class="form-control" type="number" min="0">',
+        '</div>'
+    ].join('');
+    var wp_addbtn = $('<button class="btn btn-info add_b">добавить данные</button>')
+    $(document).on('click', '.add_b', function() {
+        $(this).prev().append(wp_markup)
+    })
     $('#tags').tagsinput();
+
+    function initCanvas(text) {
+        $('.chart').highcharts({
+            chart: {
+                animation: false,
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie',
+            },
+            title: {
+                text: text
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    animation: false,
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    }
+                }
+            },
+            series: [{
+                name: 'Brands',
+                colorByPoint: true,
+                data: pieData.pop()
+            }]
+        });
+        var src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent($('.chart').highcharts().getSVG())));
+        $('.chart').remove();
+        return src
+    }
+
+    $(document).on("change", '.color', function() {
+        console.log($(this).val());
+        $(this).css('background', $(this).val())
+    })
+
     // Построить круговую диаграмму
     $.FroalaEditor.DefineIcon('insert', { NAME: 'pie-chart' });
     $.FroalaEditor.RegisterCommand('insert', {
         title: 'Построить круговую диаграмму',
         focus: true,
         undo: true,
-        refreshAfterCallback: true,
+        refreshAfterCallback: false,
         callback: function() {
-            this.html.insert('<canvas class="chart" width="300" height="300"></canvas><br>');
+            var self = this;
+            self.html.insert('<div class="chart"></div><br>');
 
-            initCanvas();
+            // initCanvas();
+            return mp.confirm(wp_addbtn, function() {
+
+                var arr = [];
+                $('.popup-content').each(function(i, el) {
+                    $el = $(el);
+                    var data = {
+                        y: parseFloat($el.find('input[type="number"]').val()),
+                        name: $el.find('.unit').val(),
+                    }
+                    arr.push(data);
+                })
+                if (arr.length) {
+                    pieData.push(arr)
+                }
+                var text = $('.text').val();
+                var src = initCanvas(text);
+                setTimeout(function() {
+                    $('#content').froalaEditor('html.insert', '<img class="fr-dib" alt="pic" src=' + src + '>', false);
+                }, 100)
+
+            });
         }
     });
     $.FroalaEditor.DefineIcon('preview', { NAME: 'newspaper-o' });
@@ -122,9 +190,9 @@ $(function() {
 
             // Response contains the original server response to the request if available.
         })
-        .on('froalaEditor.contentChanged', function(e, editor) {
-            initCanvas();// Do something here.
-        });
+        // .on('froalaEditor.contentChanged', function(e, editor) {
+        //     initCanvas(); // Do something here.
+        // });
 
     // .on('froalaEditor.image.removed', function(e, editor, $img) {
     //     console.log($img)
@@ -138,9 +206,6 @@ $(function() {
     //             console.log('image delete problem');
     //         });
     // });
-
-
-
     // создание поста
     $('#create_post').click(function(e) {
 

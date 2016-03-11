@@ -1,4 +1,6 @@
+installMP();
 $(function() {
+
     $("#my_search").autocomplete({
         source: function(request, response) {
             // организуем кроссдоменный запрос
@@ -50,7 +52,7 @@ $(function() {
     $('.ui-autocomplete').addClass('clearfix row')
 
     window.froala_defaults = {
-        htmlAllowedEmptyTags: ['canvas'],
+        htmlAllowedEmptyTags: ['div'],
         language: 'ru',
         // imageUploadParam: 'file',
         imagePaste: false,
@@ -74,4 +76,54 @@ function changeimg(str) {
             str = str.target.result; // file reader
              window.editor.html.insert('<img style="width:300px;" src=' + (str).toString() + ' alt ="inserted">');
         }
+}
+/////////////////////
+// Magnific Popups //
+/////////////////////
+function installMP() {
+    // magnific popups
+    window.mp = {};
+    // замена стандартному алерту
+    window.mp.alert = function(html) {
+        var popup = $('<div></div>');
+        popup.addClass('white-popup');
+        // popup.append('<h3>Внимание!</h3>');
+        popup.append(html);
+
+        $.magnificPopup.open({
+            items: {
+                src: popup,
+                type: 'inline'
+            }
+        });
+    }
+    // замена стандартному confirm
+    window.mp.confirm = function(html, cb) {
+        var popup = $('<div class="white-popup-block"></div>');
+        popup.append('<div class="col-md-12 form-group row"><label>Введите название диаграммы</label><input class="form-control text" type="text"></div>');
+        popup.append('<div class="wp-wrapper"></div>');
+        popup.append(html);
+
+        var btns = $('<div></div>');
+            var ok = $('<span class="btn btn-secondary">ОК</span>');
+                ok.bind('click', function() {
+                    cb();
+                    $.magnificPopup.close();
+                });
+            var cancel = $('<span class="btn btn-secondary">Отмена</span>');
+                cancel.bind('click', function() {
+                    $.magnificPopup.close();
+                });
+            btns.append(ok);
+            btns.append(cancel);
+        popup.append(btns);
+
+        $.magnificPopup.open({
+            items: {
+                src: popup,
+                type: 'inline'
+            },
+            modal: true
+        });
+    }
 }

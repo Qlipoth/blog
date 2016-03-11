@@ -20,7 +20,9 @@
     "chosen": "~1.4.2",
     "jquery-ui": "~1.11.4",
     "froala-wysiwyg-editor": "~2.1.0",
-    "Chart.js": "chartjs#~1.0.2"
+    "magnific-popup": "~1.1.0",
+    "highcharts": "~4.2.3",
+    "highcharts-export-clientside": "~1.1.4"
   },
   "name": "December",
   "version": "0.0.0",
