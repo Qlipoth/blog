@@ -6,16 +6,17 @@ $(function() {
     var preview;
 
     var froala_settings = {
-        toolbarButtons: ['insert', 'preview', '|'],
-        toolbarButtonsMD: ['insert', 'preview', '|'],
-        toolbarButtonsSM: ['insert', 'preview', '|'],
-        toolbarButtonsXS: ['insert', 'preview', '|']
+        toolbarButtons: [,'insert','preview','popup', '|'],
+        toolbarButtonsMD: [,'insert','preview','popup', '|'],
+        toolbarButtonsSM: [,'insert','preview','popup', '|'],
+        toolbarButtonsXS: [,'insert','preview','popup', '|']
     }
     var pieData = [];
 
     var fr = new FileReader;
     var file;
-    var wp_markup = ['<div class="popup-content row">',
+    var wp_markup = ['<div class="popup-content">',
+        '<div class="col-md-12 form-group"><label>Введите название диаграммы</label><input class="form-control text" type="text"></div>',
         '<div class="col-md-6 form-group">',
         '<label>Введите название единицы</label>',
         '<input class="form-control unit" type="text">',
@@ -25,12 +26,124 @@ $(function() {
         '<input class="form-control" type="number" min="0">',
         '</div>'
     ].join('');
-    var wp_addbtn = $('<button class="btn btn-info add_b">добавить данные</button>')
+    var wp_addbtn = '<span class="btn btn-info add_b">добавить данные</span>'
     $(document).on('click', '.add_b', function() {
         $(this).prev().append(wp_markup)
     })
     $('#tags').tagsinput();
 
+// добавление попапа(копипаста с сайта)
+// Define popup template.
+$.extend($.FroalaEditor.POPUP_TEMPLATES, {
+  'customPlugin.popup': '[_BUTTONS_][_CUSTOM_LAYER_]'
+});
+
+// Define popup buttons.
+$.extend($.FroalaEditor.DEFAULTS, {
+  popupButtons: ['popupClose', '|'],
+});
+
+// The custom popup is defined inside a plugin (new or existing).
+$.FroalaEditor.PLUGINS.customPlugin = function (editor) {
+  // Create custom popup.
+  function initPopup () {
+    // Load popup template.
+    var template = $.FroalaEditor.POPUP_TEMPLATES.customPopup;
+    if (typeof template == 'function') template = template.apply(editor);
+
+    // Popup buttons.
+    var popup_buttons = '';
+
+    // Create the list of buttons.
+    if (editor.opts.popupButtons.length > 1) {
+      popup_buttons += '<div class="fr-buttons">';
+      popup_buttons += editor.button.buildList(editor.opts.popupButtons);
+      popup_buttons += '</div>';
+    }
+
+    // Load popup template.
+    var template = {
+      buttons: popup_buttons,
+      custom_layer: wp_addbtn
+    };
+
+    // Create popup.
+    var $popup = editor.popups.create('customPlugin.popup', template);
+
+    return $popup;
+  }
+
+  // Show the popup
+  function showPopup () {
+    // Get the popup object defined above.
+    var $popup = editor.popups.get('customPlugin.popup');
+
+    // If popup doesn't exist then create it.
+    // To improve performance it is best to create the popup when it is first needed
+    // and not when the editor is initialized.
+    if (!$popup) $popup = initPopup();
+
+    // Set the editor toolbar as the popup's container.
+    editor.popups.setContainer('customPlugin.popup', editor.$tb);
+
+    // If the editor is not displayed when a toolbar button is pressed, then set BODY as the popup's container.
+    // editor.popups.setContainer('customPlugin.popup', $('body'));
+
+    // Trigger refresh for the popup.
+    // editor.popups.refresh('customPlugin.popup');
+
+    // This custom popup is opened by pressing a button from the editor's toolbar.
+    // Get the button's object in order to place the popup relative to it.
+    var $btn = editor.$tb.find('.fr-command[data-cmd="popup"]');
+
+    // Compute the popup's position.
+    var left = $btn.offset().left + $btn.outerWidth() / 2;
+    var top = $btn.offset().top + (editor.opts.toolbarBottom ? 10 : $btn.outerHeight() - 10);
+
+    // Show the custom popup.
+    // The button's outerHeight is required in case the popup needs to be displayed above it.
+    editor.popups.show('customPlugin.popup', left, top, $btn.outerHeight());
+  }
+
+  // Hide the custom popup.
+  function hidePopup () {
+    editor.popups.hide('customPlugin.popup');
+  }
+
+  // Methods visible outside the plugin.
+  return {
+    showPopup: showPopup,
+    hidePopup: hidePopup
+  }
+}
+
+// Define an icon and command for the button that opens the custom popup.
+$.FroalaEditor.DefineIcon('popup', { NAME: 'star'})
+$.FroalaEditor.RegisterCommand('popup', {
+  title: 'Show Popup',
+  undo: false,
+  focus: false,
+  plugin: 'customPlugin',
+  callback: function () {
+    this.selection.save();
+    this.customPlugin.showPopup();
+  }
+});
+
+// Define custom popup close button icon and command.
+$.FroalaEditor.DefineIcon('popupClose', { NAME: 'times' });
+$.FroalaEditor.RegisterCommand('popupClose', {
+  title: 'Close',
+  undo: false,
+  focus: false,
+  callback: function () {
+    this.customPlugin.hidePopup();
+    this.selection.restore();
+  }
+});
+
+
+        // нарисовать картинку графика
     function initCanvas(text) {
         $('.chart').highcharts({
             chart: {
@@ -71,22 +184,18 @@ $(function() {
         return src
     }
 
-    $(document).on("change", '.color', function() {
-        console.log($(this).val());
-        $(this).css('background', $(this).val())
-    })
-
     // Построить круговую диаграмму
     $.FroalaEditor.DefineIcon('insert', { NAME: 'pie-chart' });
     $.FroalaEditor.RegisterCommand('insert', {
         title: 'Построить круговую диаграмму',
         focus: true,
         undo: true,
-        refreshAfterCallback: false,
+        refreshAfterCallback: true,
         callback: function() {
             var self = this;
-            self.html.insert('<div class="chart"></div><br>');
 
+            self.html.insert('<div class="chart"></div>');
+            self.selection.save();
             // initCanvas();
             return mp.confirm(wp_addbtn, function() {
 
@@ -105,7 +214,10 @@ $(function() {
                 var text = $('.text').val();
                 var src = initCanvas(text);
                 setTimeout(function() {
-                    $('#content').froalaEditor('html.insert', '<img class="fr-dib" alt="pic" src=' + src + '>', false);
+
+                    $('.fr-view p').last().append('<img class="fr-dib" alt="pic" src=' + src + '><br>&nbsp;');
+
+                    // $('#content').froalaEditor('html.insert', '<img class="fr-dib" alt="pic" src=' + src + '>', false);
                 }, 100)
 
             });
@@ -124,17 +236,12 @@ $(function() {
         // Called when the button is hit.
         callback: function() {
             this.html.insert('<hr>');
-        },
-
-        // Called when the button state might have changed.
-        refresh: function($btn) {
-
-            // The current context is the editor instance.
-            // console.log(this.selection.element());
         }
     });
 
+  
 
+    
     fr.onload = function(e) {
         console.log(e);
         var str = e.target.result;
@@ -190,23 +297,7 @@ $(function() {
 
             // Response contains the original server response to the request if available.
         })
-        // .on('froalaEditor.contentChanged', function(e, editor) {
-        //     initCanvas(); // Do something here.
-        // });
-
-    // .on('froalaEditor.image.removed', function(e, editor, $img) {
-    //     console.log($img)
-    //     $.post('/removeFromTemp', {
-    //             src: $img.attr('src')
-    //         })
-    //         .done(function(data) {
-    //             console.log('image was deleted');
-    //         })
-    //         .fail(function() {
-    //             console.log('image delete problem');
-    //         });
-    // });
-    // создание поста
+        // создание поста
     $('#create_post').click(function(e) {
 
         var post = $('#content').froalaEditor('html.get', true).split('<hr>');
