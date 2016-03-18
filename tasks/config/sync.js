@@ -20,9 +20,9 @@ module.exports = function(grunt) {
 				src: ['**/*.!(coffee|sass|scss|less)'],
 				dest: '.tmp/public'
 			}],
-			
+
 		}
 	});
-
+  console.log('sync completed')
 	grunt.loadNpmTasks('grunt-sync');
 };

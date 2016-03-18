@@ -1,4 +1,5 @@
 installMP();
+installJQMethods();
 $(function() {
 
     $("#my_search").autocomplete({
@@ -125,5 +126,49 @@ function installMP() {
             },
             modal: true
         });
+    }
+}
+
+// JQuery methods on elements $().mask(), ...
+function installJQMethods() {
+    // disable interface parts
+    $.fn.mask = function(state) {
+        if(state === undefined || state) {
+            // add mask
+            var mask = $("<div id='mask'><img src='/images/loading.gif'/></div>");
+            if (this.find('#mask').length > 0) return;
+            this.append(mask);
+
+        }
+        else {
+            // remove mask
+            this.find('#mask').fadeOut(500, function(){ $(this).remove();});
+        }
+
+        $('#mask img').css('margin-top',($('body').scrollTop())+200);
+    }
+    $.fn.unmask = function() {
+        this.mask(false);
+    }
+
+    // уведомление об результате действия
+    // state - true/false (success/fail)
+    // cb - cb.
+    $.fn.done = function(state, cb) {
+        var el = this;
+        if (typeof cb !== 'function') cb = function() {};
+        var mask;
+        if(state) {
+            mask = $("<div id='done'><img src='/img/success.png' /></div>");
+        }
+        else {
+            mask = $("<div id='done'><img src='/img/fail.png' /></div>");
+        }
+        if (el.find('#done').length > 0) return;
+        el.append(mask);
+        setTimeout(function() {
+            el.find('#done').fadeOut(200, function(){ $(this).remove();});
+            cb();
+        }, 300);
     }
 }

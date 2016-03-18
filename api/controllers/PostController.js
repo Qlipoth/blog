@@ -86,9 +86,11 @@ module.exports = {
             description: req.param('description'),
             content: req.param('content'),
             title: req.param('title'),
+
         };
         var accum = {};
         var saved_post;
+        var charts = req.param('charts');
         return Q()
 
         .then(function() {
@@ -98,7 +100,7 @@ module.exports = {
                 params.tags = tags;
             })
             .then(function() {
-                return Post.create({ title: params.title, description: '1234', content: '12345' });
+                return Post.create({ title: params.title, description: '1234', content: '12345',charts:charts});
             })
             .then(function(created) {
                 console.log('1', created)
@@ -129,6 +131,7 @@ module.exports = {
                 accum.post.author = user.id;
                 return accum.post.save();
             })
+
             .then(function(created) {
                 res.send({
                     post_id: created.id

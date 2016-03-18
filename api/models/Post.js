@@ -33,8 +33,9 @@ module.exports = {
         via: 'posts'
       },
       charts:{
-        collection: 'Chart',
-        via: 'post'
+       type: 'json',
+       defaultsTo: '{}',
+       required: false,
       }
 
     },

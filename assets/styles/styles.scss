@@ -109,3 +109,8 @@ body {
 .add_b{
     margin-bottom: 1rem;
 }
+.diagram{
+    input+span{
+        display:none;
+    }
+}

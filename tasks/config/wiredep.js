@@ -5,21 +5,18 @@ module.exports = function(grunt) {
             // Point to the files that should be updated when
             // you run 'grunt wiredep'
             src: [
-                'views/**/*.jade',   // .html support...
+                'views/parts/head.jade',   // .html support...
             ],
-
-            // we need this line so injection is correct path
-
-
-            options: {
-                // See wiredep's configuration documentation for the options
-                // you may pass:
-
-                // https://github.com/taptapship/wiredep#configuration
+            fileTypes: {
+                jade: {
+                  replace: {
+                    js: 'script(src="{{filePath}}")'
+                  }
+                }
             }
         }
     });
-console.log('task completed');
+console.log('wiredep completed');
     grunt.loadNpmTasks('grunt-wiredep');
 
 };

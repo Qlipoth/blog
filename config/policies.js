@@ -18,7 +18,7 @@ module.exports.policies = {
     },
 
     AdminController: {
-        '*': ['passport','rememberMeAuth','editor']
+        '*': ['rememberMeAuth','passport','editor']
     },
     UserController: {
         index: true,

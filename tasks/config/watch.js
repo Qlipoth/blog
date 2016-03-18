@@ -18,10 +18,10 @@ module.exports = function(grunt) {
 		assets: {
 
 			// Assets to watch:
-			files: ['assets/**/*','!assets/bower_components/**','tasks/pipeline.js', '!**/node_modules/**', 'views/**/*.jade'],
+			files: ['assets/**/*', '!**/node_modules/**', 'views/**/*.jade'],
 
 			// When assets are changed:
-			tasks: ['syncAssets' , 'linkAssets']
+			tasks: ['sass:dev','sync:dev']
 		},
     jade2js: {
             files: ['views/mixins/*.jade'],
